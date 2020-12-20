@@ -18,7 +18,7 @@ def get_quote():
 
 #add msg to database
 def update_encouragements(encouraging_message):
-  if "encouragements" in db.key():
+  if "encouragements" in db.keys():
     encouragements = db["encouragements"]
     encouragements.append(encouraging_message)
     db["encouragements"] = encouragements
@@ -37,6 +37,9 @@ sad_words = ["sad","depressed","unhappy","angry","sedih","nangis","marah","miser
 
 starter_encouragements = ["Hang in  there!","Cheer up!","You are a great person"]
 
+if "responding" not in db.keys():
+  db["responding"] =True
+
 #register an event
 @client.event
 async def on_ready():
@@ -54,12 +57,13 @@ async def on_message(message):
     quote = get_quote()
     await message.channel.send(quote)
 
-  options = starter_encouragements
-  if "encouragements" in db.keys():
-    options = options + db["encouragements"]
+  if db["responding"]:
+    options = starter_encouragements
+    if "encouragements" in db.keys():
+      options = options + db["encouragements"]
 
-  if any(word in msg for word in sad_words):
-    await message.channel.send(random.choice(options))
+    if any(word in msg for word in sad_words):
+      await message.channel.send(random.choice(options))
 
   if msg.startswith("$new"):
     encouraging_message = msg.split("$new ",1)[1]
@@ -70,5 +74,26 @@ async def on_message(message):
     encouragements = []
     if "encouragements" in db.keys():
       index = int(msg.split("$del ",1)[1])
+      delete_encouragement(index)
+      encouragements = db["encouragements"]
+    await message.channel.send(encouragements)
+
+#shows the list of added encouragement  message
+  if msg.startswith("$list"):
+    encouragements = []
+    if "encouragements" in db.keys():
+      encouragements = db["encouragements"]
+    await message.channel.send(encouragements)
+
+#change whether bots will response to sad words or not
+  if msg.startswith("$responding"):
+    value = msg.split("$responding ",1)[1]
+
+    if value.lower() == "true":
+      db["responding"] =True
+      await message.channel.send("Responding is on")
+    else:
+      db["responding"] =False
+      await message.channel.send("Responding is off")
 
 client.run(os.getenv("TOKEN"))
