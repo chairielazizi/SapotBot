@@ -17,13 +17,13 @@ def get_quote():
   return quote
 
 #add msg to database
-def update_encouragements(msg):
+def update_encouragements(encouraging_message):
   if "encouragements" in db.key():
     encouragements = db["encouragements"]
-    encouragements.append(msg)
+    encouragements.append(encouraging_message)
     db["encouragements"] = encouragements
   else:
-    db["encouragements"] = [msg]
+    db["encouragements"] = [encouraging_message]
 
 #delete msg in database
 def delete_encouragement(index):
@@ -60,5 +60,15 @@ async def on_message(message):
 
   if any(word in msg for word in sad_words):
     await message.channel.send(random.choice(options))
+
+  if msg.startswith("$new"):
+    encouraging_message = msg.split("$new ",1)[1]
+    update_encouragements(encouraging_message)
+    await message.channel.send("New encouraging message added.")
+
+  if msg.startswith("$del"):
+    encouragements = []
+    if "encouragements" in db.keys():
+      index = int(msg.split("$del ",1)[1])
 
 client.run(os.getenv("TOKEN"))
