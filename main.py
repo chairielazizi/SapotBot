@@ -98,5 +98,6 @@ async def on_message(message):
       db["responding"] =False
       await message.channel.send("Responding is off")
 
+#connect to uptimerobot.com to ping the bot every 5 minutes
 keep_alive()
 client.run(os.getenv("TOKEN"))
