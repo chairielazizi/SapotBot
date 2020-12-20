@@ -5,6 +5,7 @@ import requests
 import json
 
 import random
+from replit import db
 
 #connection to the discord
 client = discord.Client()
@@ -14,6 +15,23 @@ def get_quote():
   json_data = json.loads(response.text)
   quote = json_data[0]['q'] + " -" + json_data[0]['a']
   return quote
+
+#add msg to database
+def update_encouragements(msg):
+  if "encouragements" in db.key():
+    encouragements = db["encouragements"]
+    encouragements.append(msg)
+    db["encouragements"] = encouragements
+  else:
+    db["encouragements"] = [msg]
+
+#delete msg in database
+def delete_encouragement(index):
+  #get list of encouragementsform the database
+  encouragements = db["encouragements"]
+  if len(encouragements) > index:
+    del encouragements[index]
+  db["encouragements"] = encouragements
 
 sad_words = ["sad","depressed","unhappy","angry","sedih","nangis","marah","miserable","depressing"]
 
