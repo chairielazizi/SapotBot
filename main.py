@@ -4,6 +4,8 @@ import os
 import requests
 import json
 
+import random
+
 #connection to the discord
 client = discord.Client()
 
@@ -12,6 +14,10 @@ def get_quote():
   json_data = json.loads(response.text)
   quote = json_data[0]['q'] + " -" + json_data[0]['a']
   return quote
+
+sad_words = ["sad","depressed","unhappy","angry","sedih","nangis","marah","miserable","depressing"]
+
+starter_encouragements = ["Hang in  there!","Cheer up!","You are a great person"]
 
 #register an event
 @client.event
@@ -24,7 +30,8 @@ async def on_message(message):
   if message.author == client.user:
     return
 
-  if message.content.startswith("hello"):
-    await message.channel.send("Hello!")
+  if message.content.startswith("hmm"):
+    quote = get_quote()
+    await message.channel.send(quote)
 
 client.run(os.getenv("TOKEN"))
