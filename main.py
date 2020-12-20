@@ -1,8 +1,17 @@
 import discord
 import os
+#allow http request to get data from zenquotes api
+import requests
+import json
 
 #connection to the discord
 client = discord.Client()
+
+def get_quote():
+  response = requests.get("https://zenquotes.io/api/random")
+  json_data = json.loads(response.text)
+  quote = json_data[0]['q'] + " -" + json_data[0]['a']
+  return quote
 
 #register an event
 @client.event
