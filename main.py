@@ -55,7 +55,11 @@ async def on_message(message):
 
   msg = message.content
 
-  if message.content.startswith("hmm"):
+  if message.content.startswith("huhu"):
+    quote = get_quote()
+    await message.channel.send(quote)
+
+  if message.content.startswith("Huhu"):
     quote = get_quote()
     await message.channel.send(quote)
 
